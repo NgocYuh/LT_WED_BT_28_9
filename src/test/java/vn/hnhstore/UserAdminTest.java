@@ -17,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.hnhstore.user.User;
 import vn.hnhstore.user.UserRepository;
+import vn.hnhstore.user.RoleRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,6 +32,7 @@ class UserAdminTest {
     @Autowired MockMvc mvc;
     @Autowired UserRepository users;
     @Autowired PasswordEncoder encoder;
+    @Autowired RoleRepository roles;
 
     @Test void adminCanManageUsersAndSearchWithRoleProtection() throws Exception {
         mvc.perform(get("/admin/users")).andExpect(status().is3xxRedirection());
@@ -63,5 +65,14 @@ class UserAdminTest {
         mvc.perform(post("/admin/users/" + created.getId() + "/delete").session(admin).with(csrf()))
                 .andExpect(redirectedUrl("/admin/users"));
         assertThat(users.findById(created.getId())).isEmpty();
+        for (int i = 0; i < 11; i++)
+            users.save(new User("bulkuser" + i, "bulk" + i + "@example.test", encoder.encode("bulk-pass-123"),
+                    "Bulk User " + i, null, roles.findByName("USER").orElseThrow()));
+        org.springframework.data.domain.Page<?> page = (org.springframework.data.domain.Page<?>)
+                mvc.perform(get("/admin/users").session(admin).param("q", "Bulk User")
+                        .param("page", "1")).andExpect(status().isOk())
+                        .andReturn().getModelAndView().getModel().get("users");
+        assertThat(page.getContent()).hasSize(1);
+        assertThat(page.getTotalElements()).isEqualTo(11);
     }
 }

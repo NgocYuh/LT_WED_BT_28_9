@@ -22,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.hnhstore.product.ProductImageStore;
+import vn.hnhstore.product.Product;
 import vn.hnhstore.product.ProductRepository;
 import vn.hnhstore.user.RoleRepository;
 import vn.hnhstore.user.User;
@@ -52,7 +53,7 @@ class ProductTest {
         MockHttpSession ownerSession = login("product-owner@example.test", "owner-pass-123");
         MockHttpSession otherSession = login("other-product", "other-pass-123");
         MockHttpSession adminSession = login("product-admin@example.test", "admin-pass-123");
-        MockMultipartFile image = new MockMultipartFile("image", "one.jpg", "image/jpeg", new byte[]{1,2,3});
+        MockMultipartFile image = new MockMultipartFile("image", "one.jpg", "image/jpeg", new byte[]{(byte) 255,(byte) 216,(byte) 255,1});
         mvc.perform(multipart("/products").file(image).session(ownerSession).with(csrf())
                 .param("name", "Book One").param("description", "New book").param("price", "12.50"))
                 .andExpect(redirectedUrl("/products"));
@@ -65,7 +66,7 @@ class ProductTest {
         mvc.perform(post("/products/" + id + "/delete").session(otherSession).with(csrf()))
                 .andExpect(status().isForbidden());
         assertThat(products.findById(id)).isPresent();
-        MockMultipartFile replacement = new MockMultipartFile("image", "two.jpg", "image/jpeg", new byte[]{4,5,6});
+        MockMultipartFile replacement = new MockMultipartFile("image", "two.jpg", "image/jpeg", new byte[]{(byte) 255,(byte) 216,(byte) 255,2});
         mvc.perform(multipart("/products/" + id).file(replacement).session(ownerSession).with(csrf())
                 .param("name", "Book Two").param("description", "Updated").param("price", "14.00"))
                 .andExpect(redirectedUrl("/products"));
@@ -76,6 +77,17 @@ class ProductTest {
         verify(images).delete("hnhstore/products/two");
         assertThat(products.findById(id)).isEmpty();
         assertThat(other.getId()).isNotNull();
+        User owner = users.findByEmailWithRole("product-owner@example.test").orElseThrow();
+        for (int i = 0; i < 11; i++)
+            products.save(new Product("Bulk " + i, "Paging check", java.math.BigDecimal.ONE, owner));
+        org.springframework.data.domain.Page<?> firstPage = (org.springframework.data.domain.Page<?>)
+                mvc.perform(get("/products").session(ownerSession).param("q", "Bulk")
+                        .param("page", "0")).andReturn().getModelAndView().getModel().get("products");
+        assertThat(firstPage.getContent()).hasSize(10);
+        assertThat(firstPage.getTotalElements()).isEqualTo(11);
+        String secondPage = mvc.perform(get("/products").session(ownerSession).param("q", "Bulk")
+                .param("page", "1")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertThat(secondPage).contains("Trang 2 / 2");
     }
 
     private MockHttpSession login(String name, String password) throws Exception {

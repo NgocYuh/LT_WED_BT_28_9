@@ -1,49 +1,41 @@
 # HNHSTORE
 
-Một ứng dụng Spring Boot 4.1.1 (Java 26) cho hai bài đăng nhập. Bản `main` đăng nhập bằng **username hoặc email**; tag `bai-1-hoan-thanh` lưu bản chỉ đăng nhập bằng email.
+Spring Boot 4.1.1 · Java 26 · Spring Security 7 · SQL Server Windows Authentication. Một ứng dụng cho bài 1–3; các mốc nằm ở tag `bai-1-hoan-thanh`, `bai-2-hoan-thanh`, `bai-3-hoan-thanh`.
 
-Bài 3 đang được phát triển trên cùng project: đăng ký/OTP, quản lý user và product. Tag `bai-2-hoan-thanh` lưu bản login trước khi thêm bài 3. Cấu hình SMTP và Cloudinary sẽ dùng biến môi trường trong `.env.example`.
-
-## 1. Clone và chạy test bằng H2
-
-Cài JDK 26 và Maven 3.9+, rồi chạy:
+## Clone và chạy test
 
 ```powershell
 git clone https://github.com/NgocYuh/LT_WED_BT_28_9.git
 cd LT_WED_BT_28_9
-java -version
 mvn test
 ```
 
-`mvn test` dùng H2 trong bộ nhớ, **không cần SQL Server**. Nếu Maven không ghi được vào cache mặc định, dùng `mvn '-Dmaven.repo.local=.m2/repository' test`.
+Test dùng H2 trong bộ nhớ, không cần SQL Server, SMTP hay Cloudinary. Nếu Maven không ghi được cache mặc định: `mvn '-Dmaven.repo.local=.m2/repository' test`.
 
-## 2. Chạy ứng dụng với SQL Server
+## Chạy ứng dụng trên SQL Server `(local)`
 
-Cần SQL Server `(local)` bật TCP cổng 1433 và tài khoản Windows có quyền tạo database. Chạy các lệnh sau **một lần trên database mới** (hoặc chạy hai file SQL tương ứng trong SSMS):
-
-```powershell
-sqlcmd -S '(local)' -E -C -b -Q "IF DB_ID(N'hnhstore_login') IS NULL CREATE DATABASE hnhstore_login"
-sqlcmd -S '(local)' -d hnhstore_login -E -C -b -i 'src/main/resources/db/01-assignment-one.sql'
-sqlcmd -S '(local)' -d hnhstore_login -E -C -b -i 'src/main/resources/db/02-assignment-two.sql'
-```
-
-Tải [Microsoft JDBC Driver 13.6.0 (ZIP)](https://learn.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server). Giải nén và chép `sqljdbc_13.6/enu/auth/x64/mssql-jdbc_auth-13.6.0.x64.dll` vào `.local/jdbc-auth/` trong repo. Thư mục này không được đưa lên Git.
-
-Trong PowerShell tại gốc repo, đặt mật khẩu **đăng nhập website** do bạn tự chọn, rồi chạy:
+1. Tạo database `hnhstore_login`. Với database **mới**, chạy lần lượt `01`, `02`, `03` trong SSMS. Với database **đã làm bài 2**, sao lưu trước rồi chỉ chạy `03-assignment-three.sql`. Script `03` có thể chạy lại và giữ nguyên user/role/password/ảnh cũ.
+2. Tải [Microsoft JDBC Driver 13.6.0](https://learn.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server), chép `mssql-jdbc_auth-13.6.0.x64.dll` vào `.local/jdbc-auth/` (thư mục này không lên Git).
+3. Trong PowerShell tại gốc repo, đặt biến rồi chạy:
 
 ```powershell
 $env:Path = "$(Resolve-Path '.local\jdbc-auth');$env:Path"
 $env:SEED_USER_EMAIL = 'user@example.test'
-$env:SEED_USER_PASSWORD = 'THAY_BANG_MAT_KHAU_USER'
+$env:SEED_USER_PASSWORD = 'MAT_KHAU_TU_CHON'
 $env:SEED_ADMIN_EMAIL = 'admin@example.test'
-$env:SEED_ADMIN_PASSWORD = 'THAY_BANG_MAT_KHAU_ADMIN'
+$env:SEED_ADMIN_PASSWORD = 'MAT_KHAU_ADMIN_TU_CHON'
 mvn spring-boot:run
 ```
 
-Ứng dụng dùng **Windows Authentication**, không cần SQL username/password. Nếu SQL Server ở host hoặc cổng khác, đặt `DB_URL` theo mẫu trong `.env.example`. Account demo chỉ được tạo lần đầu nếu đã đặt email và mật khẩu; đổi biến môi trường sau đó không đổi mật khẩu account đã lưu.
+Mặc định app dùng Windows Authentication đến `localhost:1433`, database `hnhstore_login`; không cần SQL username/password. Nếu instance khác, đặt `DB_URL` theo `.env.example`. Seed chỉ tạo tài khoản chưa tồn tại; đổi biến môi trường sau này không đổi mật khẩu đã lưu.
 
-Mở `http://localhost:8080/login`. Đăng nhập bằng `user01` **hoặc** `user@example.test` với mật khẩu USER; dùng `huyadmin` **hoặc** `admin@example.test` với mật khẩu ADMIN. Trang `http://localhost:8080/admin` chỉ dành cho ADMIN. Nhấn `Ctrl+C` để dừng ứng dụng.
+## Thử các chức năng
 
-## Xem bản bài 1
+- `http://localhost:8080/login`: USER `user01` hoặc email seed; ADMIN `huyadmin` hoặc email seed. Mật khẩu là giá trị bạn tự đặt ở trên.
+- `/register` → nhận OTP qua email → `/verify-otp` → đăng nhập; `/forgot-password` → `/reset-password` để đổi mật khẩu.
+- `/products`: thêm, tìm, sửa, xóa sản phẩm. USER chỉ sửa/xóa sản phẩm của mình; ADMIN quản lý được tất cả.
+- `/admin/users`: ADMIN thêm, tìm, phân trang, sửa, xóa user; dashboard ở `/admin`.
 
-`git checkout bai-1-hoan-thanh` để xem bản email login; `git checkout main` để quay lại. Nếu **chạy** tag cũ, dùng database thử riêng chỉ có script `01-assignment-one.sql` và DLL JDBC **13.4.0 x64** tương ứng với driver của tag đó.
+Để thử OTP thật, đặt `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM`. Để thử upload ảnh thật, đặt `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`. Xem tên biến trong `.env.example`; giữ giá trị thật ở môi trường máy, không commit `.env`. Nếu chưa có cấu hình dịch vụ, `mvn test` vẫn kiểm thử luồng bằng mock.
+
+Ghi chú tích hợp: bài 3 tiếp tục đăng nhập bằng username **hoặc** email từ bài 2, dùng chung `User`/`Role` và một `SecurityFilterChain`; schema nâng cấp bằng `03` thay cho tự tạo bảng bằng Hibernate.

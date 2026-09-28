@@ -1,10 +1,13 @@
 package vn.hnhstore.product;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import vn.hnhstore.user.UserRepository;
 @Service
 @PreAuthorize("isAuthenticated()")
 public class ProductService {
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private static final Set<String> TYPES = Set.of("image/jpeg", "image/png", "image/webp");
     private final ProductRepository products;
     private final UserRepository users;
@@ -79,7 +83,8 @@ public class ProductService {
     private void applyImage(Product product, ProductForm form) throws IOException {
         MultipartFile file = form.getImage();
         if (file != null && !file.isEmpty()) {
-            if (file.getSize() > 5L * 1024 * 1024 || !TYPES.contains(file.getContentType()))
+            if (file.getSize() > 5L * 1024 * 1024 || !TYPES.contains(file.getContentType())
+                    || !matchesSignature(file))
                 throw new IllegalArgumentException("Ảnh phải là JPG, PNG hoặc WebP và không quá 5 MB");
             ProductImageStore.Image image = images.upload(file);
             String oldId = product.getImagePublicId();
@@ -93,12 +98,27 @@ public class ProductService {
         }
     }
 
+    private boolean matchesSignature(MultipartFile file) throws IOException {
+        byte[] head;
+        try (var stream = file.getInputStream()) { head = stream.readNBytes(12); }
+        return switch (file.getContentType()) {
+            case "image/jpeg" -> head.length >= 3 && (head[0] & 0xff) == 0xff
+                    && (head[1] & 0xff) == 0xd8 && (head[2] & 0xff) == 0xff;
+            case "image/png" -> head.length >= 8 && Arrays.equals(Arrays.copyOf(head, 8),
+                    new byte[]{(byte) 137, 80, 78, 71, 13, 10, 26, 10});
+            case "image/webp" -> head.length >= 12 && Arrays.equals(Arrays.copyOf(head, 4),
+                    new byte[]{82, 73, 70, 70}) && Arrays.equals(Arrays.copyOfRange(head, 8, 12),
+                    new byte[]{87, 69, 66, 80});
+            default -> false;
+        };
+    }
+
     private void afterCommitDelete(String publicId) {
         if (publicId == null) return;
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override public void afterCommit() {
                 try { images.delete(publicId); }
-                catch (IOException ex) { System.err.println("Cloudinary cleanup failed for product image"); }
+                catch (IOException | RuntimeException ex) { log.warn("Cloudinary image cleanup failed: {}", publicId, ex); }
             }
         });
     }
@@ -107,7 +127,7 @@ public class ProductService {
             @Override public void afterCompletion(int status) {
                 if (status == STATUS_ROLLED_BACK) {
                     try { images.delete(publicId); }
-                    catch (IOException ex) { System.err.println("Cloudinary rollback cleanup failed"); }
+                    catch (IOException | RuntimeException ex) { log.warn("Cloudinary rollback cleanup failed: {}", publicId, ex); }
                 }
             }
         });

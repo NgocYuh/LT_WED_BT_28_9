@@ -1,6 +1,7 @@
 package vn.hnhstore.auth;
 
 import jakarta.validation.Valid;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +23,7 @@ public class RecoveryController {
     String forgot(@RequestParam String email, RedirectAttributes redirect) {
         try {
             recovery.requestReset(email);
-        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException | IllegalStateException | MailException ignored) {
             // The response does not disclose whether the address exists or is rate limited.
         }
         redirect.addFlashAttribute("success", "Nếu email hợp lệ, mã đặt lại mật khẩu đã được gửi.");

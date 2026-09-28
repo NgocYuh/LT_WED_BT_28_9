@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: page(~{::main})}">
+<body>
+<main class="panel">
+  <h1>Chào mừng đến HNHSTORE</h1>
+  <p>Ví dụ đăng nhập bằng email với Spring Security 7.</p>
+  <p th:if="${currentUser != null}" th:text="'Xin chào, ' + ${currentUser.fullName}">Xin chào</p>
+</main>
+</body>
+</html>

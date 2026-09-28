@@ -1,0 +1,16 @@
+:root { font-family: system-ui, sans-serif; color: #152238; background: #f4f7fb; }
+body { margin: 0; }
+.site-header { background: #123153; color: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+.site-header a { color: white; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: 1rem; }
+.brand a { font-weight: 800; font-size: 1.3rem; }
+.brand span { font-size: .85rem; color: #d9e8f7; }
+nav, .account { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+form { margin: 0; }
+button { background: #216ca6; color: white; border: 0; border-radius: .4rem; padding: .6rem 1rem; cursor: pointer; }
+.panel { margin: 2rem auto; padding: 2rem; background: white; border-radius: .75rem; max-width: 720px; box-shadow: 0 4px 20px #173e661a; }
+.auth-panel { max-width: 400px; }
+.auth-panel form { display: grid; gap: .6rem; }
+input { padding: .7rem; border: 1px solid #9daebd; border-radius: .35rem; font: inherit; }
+.error { color: #a21e1e; }.success { color: #136837; }
+footer { text-align: center; color: #627184; padding: 1rem; }

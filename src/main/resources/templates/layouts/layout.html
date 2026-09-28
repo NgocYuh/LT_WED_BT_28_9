@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:fragment="page(content)">
+<head th:replace="~{fragments/head :: head('Trang chủ')}"></head>
+<body>
+  <header th:replace="~{fragments/header :: header}"></header>
+  <main th:replace="${content}"></main>
+  <footer>© HNHSTORE</footer>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header" class="site-header">
+  <div class="brand"><a th:href="@{/}">HNHSTORE</a><span>Chủ website: Hoàng Ngọc Huy</span></div>
+  <nav aria-label="Điều hướng chính">
+    <a th:href="@{/}">Trang chủ</a>
+    <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Quản trị</a>
+    <span sec:authorize="isAnonymous()"><a th:href="@{/login}">Đăng nhập</a></span>
+    <div sec:authorize="isAuthenticated()" class="account">
+      <span th:if="${currentUser != null}" th:text="${currentUser.fullName + ' (' + currentUser.email + ')'}">Tài khoản</span>
+      <form th:action="@{/logout}" method="post"><button type="submit">Đăng xuất</button></form>
+    </div>
+  </nav>
+</header>
+</body>
+</html>

@@ -21,7 +21,7 @@ public class HeaderModel {
     void addCurrentUser(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
-            users.findByEmailWithRole(authentication.getName())
+            users.findByUsernameOrEmailWithRole(authentication.getName())
                     .map(mapper::toView)
                     .ifPresent(view -> model.addAttribute("currentUser", view));
         }

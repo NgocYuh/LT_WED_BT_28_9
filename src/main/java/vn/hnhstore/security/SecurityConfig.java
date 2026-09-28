@@ -15,7 +15,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/css/**", "/images/**", "/error").permitAll()
+                .requestMatchers("/", "/login", "/register", "/verify-otp", "/resend-register-otp",
+                        "/css/**", "/images/**", "/error").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .formLogin(form -> form.loginPage("/login")

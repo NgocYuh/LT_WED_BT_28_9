@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Xác minh OTP')}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="panel auth-panel">
+  <h1>Xác minh email</h1>
+  <p class="success" th:if="${success}" th:text="${success}"></p>
+  <p class="error" th:if="${error}" th:text="${error}"></p>
+  <form th:action="@{/verify-otp}" method="post">
+    <label for="email">Email</label><input id="email" name="email" type="email" th:value="${email}" required>
+    <label for="code">Mã OTP 6 số</label><input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" required>
+    <button type="submit">Kích hoạt</button>
+  </form>
+  <form th:action="@{/resend-register-otp}" method="post">
+    <input type="hidden" name="email" th:value="${email}">
+    <button type="submit">Gửi lại OTP</button>
+  </form>
+</main>
+</body>
+</html>

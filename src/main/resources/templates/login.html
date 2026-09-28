@@ -7,6 +7,7 @@
   <h1>Đăng nhập HNHSTORE</h1>
   <p class="error" th:if="${param.error}">Username/email hoặc mật khẩu không đúng.</p>
   <p class="success" th:if="${param.logout}">Bạn đã đăng xuất.</p>
+  <p class="success" th:if="${success}" th:text="${success}"></p>
   <form th:action="@{/login}" method="post">
     <label for="username">Username hoặc email</label>
     <input id="username" name="username" type="text" autocomplete="username" required autofocus>
@@ -14,6 +15,7 @@
     <input id="password" name="password" type="password" autocomplete="current-password" required>
     <button type="submit">Đăng nhập</button>
   </form>
+  <p><a th:href="@{/register}">Tạo tài khoản</a></p>
 </main>
 </body>
 </html>

@@ -55,6 +55,7 @@ public class User {
     public List<Product> getProducts() { return products; }
 
     public void activate() { enabled = true; }
+    public void deactivate() { enabled = false; }
     public void changePassword(String encodedPassword) { password = encodedPassword; }
     public void updateProfile(String username, String email, String fullName, Role role, boolean enabled) {
         this.username = username;

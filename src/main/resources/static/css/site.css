@@ -6,6 +6,7 @@ body { margin: 0; }
 .brand a { font-weight: 800; font-size: 1.3rem; }
 .brand span { font-size: .85rem; color: #d9e8f7; }
 nav, .account { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: white; }
 form { margin: 0; }
 button { background: #216ca6; color: white; border: 0; border-radius: .4rem; padding: .6rem 1rem; cursor: pointer; }
 .panel { margin: 2rem auto; padding: 2rem; background: white; border-radius: .75rem; max-width: 720px; box-shadow: 0 4px 20px #173e661a; }

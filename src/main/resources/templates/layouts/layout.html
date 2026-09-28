@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:fragment="page(content)">
-<head th:replace="~{fragments/head :: head('Trang chủ')}"></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title layout:title-pattern="$CONTENT_TITLE | HNHSTORE">HNHSTORE</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
+</head>
 <body>
   <header th:replace="~{fragments/header :: header}"></header>
-  <main th:replace="${content}"></main>
+  <main layout:fragment="content"></main>
   <footer>© HNHSTORE</footer>
 </body>
 </html>

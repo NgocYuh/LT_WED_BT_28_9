@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: page(~{::main})}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head><title>Trang chủ</title></head>
 <body>
-<main class="panel">
+<main layout:fragment="content" class="panel">
   <h1>Chào mừng đến HNHSTORE</h1>
-  <p>Ví dụ đăng nhập bằng email với Spring Security 7.</p>
+  <p>Đăng nhập bằng username hoặc email với Spring Security 7.</p>
   <p th:if="${currentUser != null}" th:text="'Xin chào, ' + ${currentUser.fullName}">Xin chào</p>
 </main>
 </body>

@@ -5,11 +5,11 @@
 <header th:replace="~{fragments/header :: header}"></header>
 <main class="panel auth-panel">
   <h1>Đăng nhập HNHSTORE</h1>
-  <p class="error" th:if="${param.error}">Email hoặc mật khẩu không đúng.</p>
+  <p class="error" th:if="${param.error}">Username/email hoặc mật khẩu không đúng.</p>
   <p class="success" th:if="${param.logout}">Bạn đã đăng xuất.</p>
   <form th:action="@{/login}" method="post">
-    <label for="email">Email</label>
-    <input id="email" name="email" type="email" autocomplete="username" required autofocus>
+    <label for="username">Username hoặc email</label>
+    <input id="username" name="username" type="text" autocomplete="username" required autofocus>
     <label for="password">Mật khẩu</label>
     <input id="password" name="password" type="password" autocomplete="current-password" required>
     <button type="submit">Đăng nhập</button>

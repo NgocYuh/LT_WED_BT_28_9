@@ -1,4 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: page(~{::main})}">
-<body><main class="panel"><h1>Quản trị HNHSTORE</h1><p>Chỉ tài khoản ADMIN được xem trang này.</p></main></body>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head><title>Quản trị</title></head>
+<body><main layout:fragment="content" class="panel"><h1>Quản trị HNHSTORE</h1><p>Chỉ tài khoản ADMIN được xem trang này.</p></main></body>
 </html>

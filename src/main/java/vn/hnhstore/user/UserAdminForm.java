@@ -14,7 +14,7 @@ public class UserAdminForm {
     @NotBlank
     private String roleName = "USER";
     private boolean enabled = true;
-    @Size(min = 8, max = 100)
+    @Size(max = 100)
     private String initialPassword;
 
     public String getUsername() { return username; }

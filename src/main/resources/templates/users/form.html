@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head><title>User</title></head><body>
+<main layout:fragment="content" class="panel">
+  <h1 th:text="${title}"></h1>
+  <form th:action="@{${action}}" th:object="${form}" method="post">
+    <p class="error" th:each="e : ${#fields.allErrors()}" th:text="${e}"></p>
+    <label>Username <input th:field="*{username}" required></label>
+    <label>Email <input th:field="*{email}" type="email" required></label>
+    <label>Họ tên <input th:field="*{fullName}" required></label>
+    <label>Role <select th:field="*{roleName}"><option value="USER">USER</option><option value="ADMIN">ADMIN</option></select></label>
+    <label>Kích hoạt <input th:field="*{enabled}" type="checkbox"></label>
+    <label>Mật khẩu ban đầu / mới <input th:field="*{initialPassword}" type="password"></label>
+    <p>Để trống mật khẩu khi sửa để giữ mật khẩu hiện tại.</p>
+    <button type="submit">Lưu</button>
+  </form>
+  <a th:href="@{/admin/users}">Trở lại</a>
+</main></body></html>

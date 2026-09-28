@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head><title>Quản lý user</title></head><body>
+<main layout:fragment="content" class="panel">
+  <h1>Quản lý user</h1>
+  <p th:text="'Tổng user: ' + ${totalUsers}"></p>
+  <p class="success" th:if="${success}" th:text="${success}"></p>
+  <p class="error" th:if="${error}" th:text="${error}"></p>
+  <form th:action="@{/admin/users}" method="get"><input name="q" th:value="${q}" placeholder="Username, email, họ tên"><button>Tìm</button></form>
+  <p><a th:href="@{/admin/users/new}">Thêm user</a></p>
+  <table><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Họ tên</th><th>Role</th><th>Kích hoạt</th><th>Sản phẩm</th><th>Thao tác</th></tr></thead>
+  <tbody><tr th:each="user : ${users.content}"><td th:text="${user.id}"></td><td th:text="${user.username}"></td>
+    <td th:text="${user.email}"></td><td th:text="${user.fullName}"></td><td th:text="${user.roleName}"></td>
+    <td th:text="${user.enabled ? 'Có' : 'Chưa'}"></td><td th:text="${user.productCount}"></td>
+    <td><a th:href="@{/admin/users/{id}/edit(id=${user.id})}">Sửa</a>
+      <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post"><button type="submit">Xóa</button></form></td></tr></tbody></table>
+  <p th:if="${users.empty}">Không có user phù hợp.</p>
+  <nav class="pager"><a th:if="${users.hasPrevious()}" th:href="@{/admin/users(q=${q},page=${users.number - 1})}">Trang trước</a>
+    <span th:text="'Trang ' + ${users.number + 1} + ' / ' + ${users.totalPages == 0 ? 1 : users.totalPages}"></span>
+    <a th:if="${users.hasNext()}" th:href="@{/admin/users(q=${q},page=${users.number + 1})}">Trang sau</a></nav>
+</main></body></html>

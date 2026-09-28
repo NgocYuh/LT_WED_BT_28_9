@@ -8,8 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.annotations.Nationalized;
+import vn.hnhstore.product.Product;
 
 @Entity
 @Table(name = "users")
@@ -32,6 +36,8 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+    @OneToMany(mappedBy = "user")
+    private List<Product> products = new ArrayList<>();
 
     protected User() { }
     public User(String username, String email, String password, String fullName, String images, Role role) {
@@ -46,4 +52,15 @@ public class User {
     public String getImages() { return images; }
     public boolean isEnabled() { return enabled; }
     public Role getRole() { return role; }
+    public List<Product> getProducts() { return products; }
+
+    public void activate() { enabled = true; }
+    public void changePassword(String encodedPassword) { password = encodedPassword; }
+    public void updateProfile(String username, String email, String fullName, Role role, boolean enabled) {
+        this.username = username;
+        this.email = email;
+        this.fullName = fullName;
+        this.role = role;
+        this.enabled = enabled;
+    }
 }

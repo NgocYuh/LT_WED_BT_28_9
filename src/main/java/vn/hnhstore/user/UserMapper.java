@@ -7,4 +7,8 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "roleName", source = "role.name")
     UserView toView(User user);
+
+    @Mapping(target = "roleName", source = "role.name")
+    @Mapping(target = "productCount", ignore = true)
+    UserAdminView toAdminView(User user);
 }

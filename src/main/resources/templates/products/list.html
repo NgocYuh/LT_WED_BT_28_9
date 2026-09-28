@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head><title>Sản phẩm</title></head><body>
+<main layout:fragment="content" class="panel">
+  <h1>Sản phẩm HNHSTORE</h1>
+  <p th:text="'Tổng sản phẩm: ' + ${totalProducts} + ' · Của tôi: ' + ${myProducts}"></p>
+  <p class="success" th:if="${success}" th:text="${success}"></p>
+  <form th:action="@{/products}" method="get"><input name="q" th:value="${q}" placeholder="Tên hoặc mô tả"><button>Tìm</button></form>
+  <p><a th:href="@{/products/new}">Thêm sản phẩm</a></p>
+  <table><thead><tr><th>Ảnh</th><th>Tên</th><th>Giá</th><th>Chủ sở hữu</th><th>Thao tác</th></tr></thead><tbody>
+    <tr th:each="product : ${products.content}"><td><img th:if="${product.imageUrl}" th:src="${product.imageUrl}" alt="Ảnh sản phẩm" width="80"></td>
+    <td th:text="${product.name}"></td><td th:text="${product.price}"></td><td th:text="${product.username}"></td>
+    <td th:if="${product.userId == actorId or isAdmin}">
+      <a th:href="@{/products/{id}/edit(id=${product.id})}">Sửa</a>
+      <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post"><button type="submit">Xóa</button></form></td>
+    <td th:unless="${product.userId == actorId or isAdmin}"></td></tr>
+  </tbody></table>
+  <p th:if="${products.empty}">Không có sản phẩm phù hợp.</p>
+  <nav class="pager"><a th:if="${products.hasPrevious()}" th:href="@{/products(q=${q},page=${products.number - 1})}">Trang trước</a>
+    <span th:text="'Trang ' + ${products.number + 1} + ' / ' + ${products.totalPages == 0 ? 1 : products.totalPages}"></span>
+    <a th:if="${products.hasNext()}" th:href="@{/products(q=${q},page=${products.number + 1})}">Trang sau</a></nav>
+</main></body></html>

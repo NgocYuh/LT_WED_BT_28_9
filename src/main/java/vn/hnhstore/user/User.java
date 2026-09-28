@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Nationalized;
 
 @Entity
 @Table(name = "users")
@@ -21,6 +22,7 @@ public class User {
     private String username;
     @Column(nullable = false, length = 100)
     private String password;
+    @Nationalized
     @Column(nullable = false, length = 200)
     private String fullName;
     @Column(length = 500)

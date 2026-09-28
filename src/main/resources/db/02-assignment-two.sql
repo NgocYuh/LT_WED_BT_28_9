@@ -14,3 +14,6 @@ IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.users')
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID('dbo.users')
                AND name = 'uk_users_username')
     CREATE UNIQUE INDEX uk_users_username ON dbo.users(username);
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE parent_object_id = OBJECT_ID('dbo.users')
+               AND name = 'ck_users_username_no_at')
+    ALTER TABLE dbo.users ADD CONSTRAINT ck_users_username_no_at CHECK (username NOT LIKE '%@%');

@@ -29,8 +29,8 @@ public class DemoUsers {
         String username = env.getProperty(usernameKey, defaultUsername);
         if (email != null && !email.isBlank() && password != null && !password.isBlank()
                 && !users.existsByEmailIgnoreCase(email)) {
-            if (username.isBlank() || users.existsByUsernameIgnoreCase(username)) {
-                throw new IllegalStateException("Demo username is blank or already used: " + username);
+            if (username.isBlank() || username.contains("@") || users.existsByUsernameIgnoreCase(username)) {
+                throw new IllegalStateException("Demo username is invalid or already used");
             }
             users.save(new User(username.toLowerCase(), email.toLowerCase(),
                     encoder.encode(password), name, null, role));

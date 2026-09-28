@@ -4,6 +4,7 @@ IF COL_LENGTH('dbo.users', 'username') IS NULL
     ALTER TABLE dbo.users ADD username VARCHAR(50) NULL;
 IF COL_LENGTH('dbo.users', 'images') IS NULL
     ALTER TABLE dbo.users ADD images VARCHAR(500) NULL;
+GO
 
 -- Stable unique usernames for users created before bài 2. Rename individually if desired.
 UPDATE dbo.users SET username = CONCAT('user', id) WHERE username IS NULL;

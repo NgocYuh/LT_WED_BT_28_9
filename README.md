@@ -2,6 +2,8 @@
 
 Một ứng dụng Spring Boot 4.1.1 (Java 26) cho hai bài đăng nhập. Bản `main` đăng nhập bằng **username hoặc email**; tag `bai-1-hoan-thanh` lưu bản chỉ đăng nhập bằng email.
 
+Bài 3 đang được phát triển trên cùng project: đăng ký/OTP, quản lý user và product. Tag `bai-2-hoan-thanh` lưu bản login trước khi thêm bài 3. Cấu hình SMTP và Cloudinary sẽ dùng biến môi trường trong `.env.example`.
+
 ## 1. Clone và chạy test bằng H2
 
 Cài JDK 26 và Maven 3.9+, rồi chạy:

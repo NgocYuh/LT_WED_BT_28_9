@@ -5,7 +5,9 @@
   <div class="brand"><a th:href="@{/}">HNHSTORE</a><span>Chủ website: Hoàng Ngọc Huy</span></div>
   <nav aria-label="Điều hướng chính">
     <a th:href="@{/}">Trang chủ</a>
+    <a th:href="@{/products}" sec:authorize="isAuthenticated()">Sản phẩm</a>
     <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Quản trị</a>
+    <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">User</a>
     <span sec:authorize="isAnonymous()"><a th:href="@{/login}">Đăng nhập</a></span>
     <div sec:authorize="isAuthenticated()" class="account">
       <img class="avatar" th:src="${#authentication.principal.images != null and !#strings.isEmpty(#authentication.principal.images) ? #authentication.principal.images : '/images/avatar-default.svg'}" alt="Ảnh đại diện">

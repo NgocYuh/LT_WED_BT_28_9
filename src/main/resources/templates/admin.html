@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
 <head><title>Quản trị</title></head>
-<body><main layout:fragment="content" class="panel"><h1>Quản trị HNHSTORE</h1><p>Chỉ tài khoản ADMIN được xem trang này.</p></main></body>
+<body><main layout:fragment="content" class="panel"><h1>Quản trị HNHSTORE</h1>
+  <p>Chỉ tài khoản ADMIN được xem trang này.</p>
+  <div class="stats">
+    <a th:href="@{/admin/users}"><strong th:text="${totalUsers}">0</strong><span>User</span></a>
+    <a th:href="@{/products}"><strong th:text="${totalProducts}">0</strong><span>Sản phẩm</span></a>
+  </div>
+</main></body>
 </html>

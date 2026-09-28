@@ -6,6 +6,10 @@
   <h1>Chào mừng đến HNHSTORE</h1>
   <p>Đăng nhập bằng username hoặc email với Spring Security 7.</p>
   <p th:if="${currentUser != null}" th:text="'Xin chào, ' + ${currentUser.fullName}">Xin chào</p>
+  <div th:if="${currentUser != null}" class="stats">
+    <a th:href="@{/products}"><strong th:text="${myProducts}">0</strong><span>Sản phẩm của tôi</span></a>
+    <a th:href="@{/products/new}"><strong>+</strong><span>Thêm sản phẩm</span></a>
+  </div>
 </main>
 </body>
 </html>
